@@ -11,6 +11,7 @@
 
 struct TokenizerT_ {
     char *delims;
+    char *ptr;
     char *fixed;
 };
 
@@ -67,6 +68,7 @@ TokenizerT *TKCreate(char *separators, char *ts) {
     ret->delims = calloc(128,sizeof(char));
     //ret->fixed = (char *) malloc(sizeof(char)*(strlen(ts)+1));
     ret->fixed = (char *) malloc(sizeof(char)*(256));
+    ret->ptr = ret->fixed;
     int i;
     char spec;
 
@@ -117,7 +119,6 @@ TokenizerT *TKCreate(char *separators, char *ts) {
  */
 
 void TKDestroy(TokenizerT *tk) {
-    fprintf(stderr, "[%s|%s]\n", tk->delims, tk->fixed);
     free(tk->delims);
     free(tk->fixed);
     free(tk);
@@ -141,17 +142,17 @@ char *TKGetNextToken(TokenizerT *tk) {
     int i;
 
     /* no more tokens */
-    if(strlen(tk->fixed) == 0){
+    if(strlen(tk->ptr) == 0){
         return 0;
     }
 
     /*Find end of token*/
-    for (end=0;tk->delims[tk->fixed[end]]!=1;end++){}
+    for (end=0;tk->delims[tk->ptr[end]]!=1;end++){}
 
 
     /*findrst char is a delim */
     if (start == end){
-        tk->fixed++;
+        tk->ptr++;
         return TKGetNextToken(tk);
     }
 
@@ -162,11 +163,11 @@ char *TKGetNextToken(TokenizerT *tk) {
 
     /*copy into token string*/
     for(end=0; end<stop;end++){
-        ret[end] = tk->fixed[end];
+        ret[end] = tk->ptr[end];
     }
 
     ret[stop]='\0';
-    tk->fixed= tk->fixed+stop+1;
+    tk->ptr= tk->ptr+stop+1;
     return ret;
 }
 
@@ -192,6 +193,7 @@ int main(int argc, char **argv) {
 
     while(token = TKGetNextToken(tok), token){
         freeable = token;
+        //strcpy(freeable, token);
         while(*token!='\0'){
             for(i=0;i<=strlen(shortBus);i++){
                 if(*token == shortBus[i]){
@@ -206,6 +208,6 @@ int main(int argc, char **argv) {
     printf("\n");
     free(freeable);
     }
-    //TKDestroy(tok);
+    TKDestroy(tok);
   return 0;
 }
