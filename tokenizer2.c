@@ -29,12 +29,84 @@ typedef struct TokenizerT_ TokenizerT;
  *
  * You need to fill in this function as part of your implementation.
  */
+char isSpec(char check){
+    switch(check){
+        case 'n':{
+            return '\n';
+        }
+        case 'v':{
+            return '\v';
+        }
+        case 't':{
+            return '\t';
+        }
+        case 'b':{
+            return '\b';
+        }
+        case 'r':{
+            return '\r';
+        }
+        case 'f':{
+            return '\t';
+        }
+        case 'a':{
+            return '\a';
+        }
+        case '\"':{
+            return '\"';
+        }
+        case '\\':{
+            return '\\';
+        }
+        default :return 0;
+    }
+}
 
 TokenizerT *TKCreate(char *separators, char *ts) {
     TokenizerT *ret = calloc(1,sizeof(TokenizerT));
     ret->delims = calloc(128,sizeof(char));
-    ret->fixed = calloc(1,sizeof(ts));
-  return NULL;
+    //ret->fixed = (char *) malloc(sizeof(char)*(strlen(ts)+1));
+    ret->fixed = (char *) malloc(sizeof(char)*(256));
+    int i;
+    char spec;
+
+    /*this section of code build my lookup table*/
+    for(i=0; i <= strlen(separators);i++){
+        if(separators[i]=='\\'){
+            if((spec = isSpec(separators[i+1]))!=0){
+                ret->delims[(int)spec]=1;
+                i++;
+            }else{
+                ret->delims[(int)separators[i+1]]=1;
+                i++;
+            }
+        }else{
+            ret->delims[(int)separators[i]]=1;
+        }
+    }
+    ret->delims[0]=1;
+    /**********************************************/
+    /*builds the fixed string*/
+    char *p = ret->fixed;
+    for(i =0; i<=strlen(ts);i++){
+        if(ts[i]!='\\'){
+            *p = ts[i];
+            p++;
+        }else{
+            if((spec= isSpec(ts[i+1]))!=0){
+                *p= spec;
+                p++;
+                i++;
+            }else{
+                *p=ts[i+1];
+                p++;
+                i++;
+            }
+        }
+    }
+    *(p)='\0';
+    /**********************************************/
+  return ret;
 }
 
 /*
@@ -45,6 +117,10 @@ TokenizerT *TKCreate(char *separators, char *ts) {
  */
 
 void TKDestroy(TokenizerT *tk) {
+    fprintf(stderr, "[%s|%s]\n", tk->delims, tk->fixed);
+    free(tk->delims);
+    free(tk->fixed);
+    free(tk);
 }
 
 /*
@@ -60,8 +136,38 @@ void TKDestroy(TokenizerT *tk) {
  */
 
 char *TKGetNextToken(TokenizerT *tk) {
+    int end=0;
+    int start =end;
+    int i;
 
-  return NULL;
+    /* no more tokens */
+    if(strlen(tk->fixed) == 0){
+        return 0;
+    }
+
+    /*Find end of token*/
+    for (end=0;tk->delims[tk->fixed[end]]!=1;end++){}
+
+
+    /*findrst char is a delim */
+    if (start == end){
+        tk->fixed++;
+        return TKGetNextToken(tk);
+    }
+
+    /*this is to check if the frist character is a delim*/
+    char *ret = malloc((end+1)*sizeof(char));
+
+    int stop =end;
+
+    /*copy into token string*/
+    for(end=0; end<stop;end++){
+        ret[end] = tk->fixed[end];
+    }
+
+    ret[stop]='\0';
+    tk->fixed= tk->fixed+stop+1;
+    return ret;
 }
 
 /*
@@ -73,9 +179,33 @@ char *TKGetNextToken(TokenizerT *tk) {
  */
 
 int main(int argc, char **argv) {
-    char *w;
-    TokenizerT tok = TKCreate(argv[1], argv[2]);
-    while(w=TKGetNextToken(tok) != NULL){
+    char *token;
+    char spec;
+    char *freeable;
+    if(argc != 3){
+        printf("fix ya shit\n");
+        return 0;
     }
+    int i;
+    char *shortBus = "\n\t\v\b\r\f\a\\\'\"";
+    TokenizerT *tok = TKCreate(argv[1], argv[2]);
+
+    while(token = TKGetNextToken(tok), token){
+        freeable = token;
+        while(*token!='\0'){
+            for(i=0;i<=strlen(shortBus);i++){
+                if(*token == shortBus[i]){
+                    printf("[0x%.2x]",shortBus[i]);
+                    token++;
+                    break;
+                }
+            }
+            printf("%c",*token);
+            token++;
+        }
+    printf("\n");
+    free(freeable);
+    }
+    //TKDestroy(tok);
   return 0;
 }
