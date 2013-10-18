@@ -1,156 +1,102 @@
-<list>
+<list> a
 
-a
-./testdir/testdir2/text3.txt 1 
-</list>
-
-<list>
-
-antartica
-./testdir/text2.txt 1 
-</list>
-
-<list>
-
-ass
-./testdir/text1.txt 10 
-
-
-
-
-
-
-
-
+ ./testdir/testdir2/text3.txt 1
 
 </list>
 
-<list>
+<list> antartica
 
-cool
-./testdir/text1.txt 10 
-
-
-
-
-
-
-
-
-./testdir/text2.txt 1 
-</list>
-
-<list>
-
-friend
-./testdir/testdir2/text3.txt 1 
-</list>
-
-<list>
-
-hello
-./testdir/testdir2/text3.txt 1 ./testdir/text1.txt 1 
-</list>
-
-<list>
-
-in
-./testdir/text2.txt 1 
-</list>
-
-<list>
-
-is
-./testdir/text1.txt 10 
-
-
-
-
-
-
-
-
-./testdir/testdir2/text3.txt 1 ./testdir/text2.txt 1 
-</list>
-
-<list>
-
-it
-./testdir/text2.txt 1 
-</list>
-
-<list>
-
-one
-./testdir/text2.txt 1 
-</list>
-
-<list>
-
-shit
-./testdir/text1.txt 10 
-
-
-
-
-
-
-
-
+ ./testdir/text2.txt 1
 
 </list>
 
-<list>
+<list> ass
 
-some
-./testdir/text1.txt 10 
-
-
-
-
-
-
-
-
+ ./testdir/text1.txt 10
 
 </list>
 
-<list>
+<list> cool
 
-test
-./testdir/text2.txt 1 
+ ./testdir/text1.txt 10 ./testdir/text2.txt 1
+
 </list>
 
-<list>
+<list> friend
 
-thing
-./testdir/testdir2/text3.txt 1 
+ ./testdir/testdir2/text3.txt 1
+
 </list>
 
-<list>
+<list> hello
 
-this
-./testdir/text1.txt 10 
+ ./testdir/testdir2/text3.txt 1 ./testdir/text1.txt 1
 
-
-
-
-
-
-
-
-./testdir/testdir2/text3.txt 1 ./testdir/text2.txt 1 
 </list>
 
-<list>
+<list> in
 
-works
-./testdir/text2.txt 1 
+ ./testdir/text2.txt 1
+
 </list>
 
-<list>
+<list> is
 
-world
-./testdir/text1.txt 1 
+ ./testdir/text1.txt 10 ./testdir/testdir2/text3.txt 1 ./testdir/text2.txt 1
+
+</list>
+
+<list> it
+
+ ./testdir/text2.txt 1
+
+</list>
+
+<list> one
+
+ ./testdir/text2.txt 1
+
+</list>
+
+<list> shit
+
+ ./testdir/text1.txt 10
+
+</list>
+
+<list> some
+
+ ./testdir/text1.txt 10
+
+</list>
+
+<list> test
+
+ ./testdir/text2.txt 1
+
+</list>
+
+<list> thing
+
+ ./testdir/testdir2/text3.txt 1
+
+</list>
+
+<list> this
+
+ ./testdir/text1.txt 10 ./testdir/testdir2/text3.txt 1 ./testdir/text2.txt 1
+
+</list>
+
+<list> works
+
+ ./testdir/text2.txt 1
+
+</list>
+
+<list> world
+
+ ./testdir/text1.txt 1
+
 </list>
 
