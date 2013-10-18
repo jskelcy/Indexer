@@ -97,18 +97,26 @@ void FLInsert(FreqList *freq_list, char *filename) {
 
 void FLPrintf(FreqList *freq_list, FILE *fp) {
     FreqNode *curr = NULL, *front;
+	int top5 = 0;
     for (front = freq_list->root; front != NULL; front = front->next) {
         curr = front;
     }
     for (; curr != NULL; curr = curr->prev) {
         FileNode *ptr;
         for (ptr = curr->child; ptr != NULL; ptr = ptr->next) {
+			top5++;
             if (fp) {
-                fprintf(fp, "%s %d ", ptr->name, curr->freq);
+                fprintf(fp, " %s %d", ptr->name, curr->freq);
             } else {
                 printf("\tFilename: %s\n\t\tCount: %d\n", ptr->name, curr->freq);
             }
+			if (top5 == 5) {
+				break;
+			}
         }
+		if (top5 == 5) {
+			break;
+		}
     }
     if (fp) {
         fprintf(fp, "\n");

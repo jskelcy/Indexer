@@ -15,3 +15,6 @@ FreqList.o: FreqList.c
 
 dirtrav.o: dirtrav.c
 	${CC} ${CCFlags} -c dirtrav.c
+
+clean:
+	rm *o dirtrav dummy.txt

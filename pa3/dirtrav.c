@@ -31,10 +31,10 @@ char* append(char *s,char c){
 
 void printTree(treeRoot* tree,char *currString,FILE *openFile){
     if(tree->ptr->isWord == 1){
-        fprintf(openFile,"<list>\n\n");
-        fprintf(openFile, "%s\n", currString);
+        fprintf(openFile,"<list> ");
+        fprintf(openFile, "%s\n\n", currString);
         FLPrintf(tree->ptr->freak, openFile);
-        fprintf(openFile,"</list>\n");
+        fprintf(openFile,"\n</list>\n\n");
     }
     if (tree->ptr->branches != NULL) {
         for (int i = 0; i < 36; i++) {
