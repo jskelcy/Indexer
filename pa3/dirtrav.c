@@ -144,21 +144,20 @@ void travdir(treeRoot *tree, char *dirRoot){
 
 int  main(int argc, char** argv){
     char ans;
-    FILE *test = fopen(argv[2],"r");
-    if(test!= NULL){
+    FILE *fp = fopen(argv[2],"r");
+    if(fp!= NULL){
         printf("the file %s is already a file, do you want to overwrite (y/n)\n",argv[2]);
         scanf("%c",&ans);
         if(ans == 'n'){
-            fclose(test);
+            fclose(fp);
             printf("KTHXBYE\n");
             return 0;
         }
     }
     treeRoot *tree = treeInit();
-    travdir(tree, argv[2]);
+    travdir(tree, argv[1]);
     char *currString = malloc(sizeof(char));
     currString[0] = '\0';
-    FILE *fp = fopen(argv[1],"w");
     printTree(tree, currString,fp);
     return 0;
 }
