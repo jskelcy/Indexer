@@ -136,14 +136,3 @@ void FLDestroy(FreqList *freq_list) {
 	}
 	free(freq_list);
 }
-
-int main() {
-	FreqList *list = FLCreate();
-	FLInsert(list, "hello");
-	FLInsert(list, "hello");
-	FLInsert(list, "bye");
-	FLInsert(list, "cya");
-	FLPrint(list);
-	FLDestroy(list);
-	return 0;
-}
