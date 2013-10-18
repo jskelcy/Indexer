@@ -16,7 +16,6 @@ char* append(char *s,char c){
         copy = (char *) malloc(sizeof(char)*2);
         copy[0]= c;
         copy[1]= '\0';
-        puts(copy);
         return copy;
     }
     int length = strlen(s);
@@ -26,19 +25,16 @@ char* append(char *s,char c){
     }
     copy[length]= c;
     copy[length +1] ='\0';
-    puts(copy);
     return copy;
 }
 
 
 void printTree(treeRoot* tree,char *currString,FILE *openFile){
-    puts(currString);
     if(tree->ptr->isWord == 1){
-        puts(currString);
         fprintf(openFile,"<list>\n\n");
         fprintf(openFile, "%s\n", currString);
         FLPrintf(tree->ptr->freak, openFile);
-        fprintf(openFile,"</list>\n\n");
+        fprintf(openFile,"</list>\n");
     }
     if (tree->ptr->branches != NULL) {
         for (int i = 0; i < 36; i++) {

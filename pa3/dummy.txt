@@ -1,131 +1,156 @@
 <list>
 
 a
-	Filename: ./testdir/testdir2/text3.txt
-		Count: 1
+./testdir/testdir2/text3.txt 1 
 </list>
 
 <list>
 
 antartica
-	Filename: ./testdir/text2.txt
-		Count: 1
+./testdir/text2.txt 1 
 </list>
 
 <list>
 
 ass
-	Filename: ./testdir/text1.txt
-		Count: 10
+./testdir/text1.txt 10 
+
+
+
+
+
+
+
+
+
 </list>
 
 <list>
 
 cool
-	Filename: ./testdir/text1.txt
-		Count: 10
-	Filename: ./testdir/text2.txt
-		Count: 1
+./testdir/text1.txt 10 
+
+
+
+
+
+
+
+
+./testdir/text2.txt 1 
 </list>
 
 <list>
 
 friend
-	Filename: ./testdir/testdir2/text3.txt
-		Count: 1
+./testdir/testdir2/text3.txt 1 
 </list>
 
 <list>
 
 hello
-	Filename: ./testdir/testdir2/text3.txt
-		Count: 1
-	Filename: ./testdir/text1.txt
-		Count: 1
+./testdir/testdir2/text3.txt 1 ./testdir/text1.txt 1 
 </list>
 
 <list>
 
 in
-	Filename: ./testdir/text2.txt
-		Count: 1
+./testdir/text2.txt 1 
 </list>
 
 <list>
 
 is
-	Filename: ./testdir/text1.txt
-		Count: 10
-	Filename: ./testdir/testdir2/text3.txt
-		Count: 1
-	Filename: ./testdir/text2.txt
-		Count: 1
+./testdir/text1.txt 10 
+
+
+
+
+
+
+
+
+./testdir/testdir2/text3.txt 1 ./testdir/text2.txt 1 
 </list>
 
 <list>
 
 it
-	Filename: ./testdir/text2.txt
-		Count: 1
+./testdir/text2.txt 1 
 </list>
 
 <list>
 
 one
-	Filename: ./testdir/text2.txt
-		Count: 1
+./testdir/text2.txt 1 
 </list>
 
 <list>
 
 shit
-	Filename: ./testdir/text1.txt
-		Count: 10
+./testdir/text1.txt 10 
+
+
+
+
+
+
+
+
+
 </list>
 
 <list>
 
 some
-	Filename: ./testdir/text1.txt
-		Count: 10
+./testdir/text1.txt 10 
+
+
+
+
+
+
+
+
+
 </list>
 
 <list>
 
 test
-	Filename: ./testdir/text2.txt
-		Count: 1
+./testdir/text2.txt 1 
 </list>
 
 <list>
 
 thing
-	Filename: ./testdir/testdir2/text3.txt
-		Count: 1
+./testdir/testdir2/text3.txt 1 
 </list>
 
 <list>
 
 this
-	Filename: ./testdir/text1.txt
-		Count: 10
-	Filename: ./testdir/testdir2/text3.txt
-		Count: 1
-	Filename: ./testdir/text2.txt
-		Count: 1
+./testdir/text1.txt 10 
+
+
+
+
+
+
+
+
+./testdir/testdir2/text3.txt 1 ./testdir/text2.txt 1 
 </list>
 
 <list>
 
 works
-	Filename: ./testdir/text2.txt
-		Count: 1
+./testdir/text2.txt 1 
 </list>
 
 <list>
 
 world
-	Filename: ./testdir/text1.txt
-		Count: 1
+./testdir/text1.txt 1 
 </list>
 
