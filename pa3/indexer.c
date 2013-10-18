@@ -30,18 +30,18 @@ char* append(char *s,char c){
 
 
 void printTree(treeRoot* tree,char *currString,FILE *openFile){
-    if(tree->ptr->isWord == 1){
+    Node *curr = tree->ptr;
+    if(curr->isWord == 1){
         fprintf(openFile,"<list> ");
         fprintf(openFile, "%s\n\n", currString);
-        FLPrintf(tree->ptr->freak, openFile);
+        FLPrintf(curr->freak, openFile);
         fprintf(openFile,"\n</list>\n\n");
     }
-    if (tree->ptr->branches != NULL) {
+    if (curr->branches != NULL) {
         for (int i = 0; i < 36; i++) {
-            if (tree->ptr->branches[i] != NULL) {
-                Node *curr = tree->ptr;
-                char *newWord = append(currString, tree->ptr->branches[i]->letter);
-                tree->ptr = tree->ptr->branches[i];
+            if (curr->branches[i] != NULL) {
+                char *newWord = append(currString, curr->branches[i]->letter);
+                tree->ptr = curr->branches[i];
                 printTree(tree, newWord, openFile);
                 free(newWord);
                 tree->ptr = curr;
@@ -53,16 +53,19 @@ void printTree(treeRoot* tree,char *currString,FILE *openFile){
 void freeTree(treeRoot *tree){
     Node *curr;
     curr = tree->ptr;
-    if(tree->ptr->branches != NULL){
+    if(curr->branches != NULL){
         for (int i = 0; i<36; i++){
-            if(tree->ptr->branches[i]!= NULL){
-                tree->ptr = tree->ptr->branches[i];
+            if(curr->branches[i]!= NULL){
+                tree->ptr = curr->branches[i];
                 freeTree(tree);
                 tree->ptr = curr;
             }
         }
-        free(tree->ptr->branches);
+        free(curr->branches);
     }
+	if (curr->freak != NULL) {
+		FLDestroy(curr->freak);
+	}
     free(curr);
 }
 

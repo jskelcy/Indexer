@@ -140,6 +140,9 @@ void FLDestroy(FreqList *freq_list) {
         ptr = prev;
         for (; ptr != NULL; ptr = prev) {
             prev = ptr->prev;
+			/*if (ptr->name != NULL) {
+				free(ptr->name);
+			}*/
             free(ptr);
         }
         front = curr->prev;
