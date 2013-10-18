@@ -6,6 +6,7 @@ FileNode *CreateFileNode() {
 	file_node->prev = NULL;
 	file_node->next = NULL;
 	file_node->parent = NULL;
+	return file_node;
 }
 
 FreqNode *CreateFreqNode() {
@@ -14,6 +15,7 @@ FreqNode *CreateFreqNode() {
 	freq_node->prev = NULL;
 	freq_node->next = NULL;
 	freq_node->child = NULL;
+	return freq_node;
 }
 
 FreqList *FLCreate() {
@@ -21,6 +23,7 @@ FreqList *FLCreate() {
 	freq_list->root = CreateFreqNode();
 	freq_list->root->freq = 1;
 	freq_list->current = NULL;
+	return freq_list;
 }
 
 void FLInsert(FreqList *freq_list, char *filename) {
