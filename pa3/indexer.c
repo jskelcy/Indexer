@@ -50,7 +50,21 @@ void printTree(treeRoot* tree,char *currString,FILE *openFile){
     }
 }
 
-void freeTree(){}
+void freeTree(treeRoot *tree){
+    Node *curr;
+    curr = tree->ptr;
+    if(tree->ptr->branches != NULL){
+        for (int i = 0; i<36; i++){
+            if(tree->ptr->branches[i]!= NULL){
+                tree->ptr = tree->ptr->branches[i];
+                freeTree(tree);
+                tree->ptr = curr;
+            }
+        }
+        free(tree->ptr->branches);
+    }
+    free(curr);
+}
 
 
 int isAlphaNum(char c){
@@ -153,6 +167,7 @@ int  main(int argc, char** argv){
     char *currString = malloc(sizeof(char));
     currString[0] = '\0';
     printTree(tree, currString,fp);
+    freeTree(tree);
     return 0;
 }
 
