@@ -142,9 +142,10 @@ void travdir(treeRoot *tree, char *dirRoot){
                     FLInsert(tree->ptr->freak,fileName);
                     tree->ptr = tree->root;
                 }
-            currChar = fgetc(file);
+    	        currChar = fgetc(file);
             }
-        fclose(file);
+			free(fileName);
+	        fclose(file);
         }
     }
     closedir(dp);
@@ -170,8 +171,10 @@ int  main(int argc, char** argv){
     char *currString = malloc(sizeof(char));
     currString[0] = '\0';
     printTree(tree, currString,fp);
+	free(currString);
     freeTree(tree);
     free(tree);
+	fclose(fp);
     return 0;
 }
 

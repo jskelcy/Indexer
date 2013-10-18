@@ -57,8 +57,13 @@ void FLInsert(FreqList *freq_list, char *filename) {
     }
     if (createNewNode) {
         /* Push new node */
+		int i;
         file_node = CreateFileNode();
-        file_node->name = filename;
+        file_node->name = malloc(length * sizeof(char));
+		for (i = 0; i < length; i++) {
+			file_node->name[i] = filename[i];
+		}
+		file_node->name[length - 1] = '\0';
         file_node->length = length;
         file_node->parent = freq_list->root;
         file_node->next = freq_list->root->child;
@@ -106,7 +111,7 @@ void FLPrintf(FreqList *freq_list, FILE *fp) {
         for (ptr = curr->child; ptr != NULL; ptr = ptr->next) {
 			top5++;
             if (fp) {
-                fprintf(fp, " %s %d", ptr->name, curr->freq);
+	        	fprintf(fp, " %s %d", ptr->name, curr->freq);
             } else {
                 printf("\tFilename: %s\n\t\tCount: %d\n", ptr->name, curr->freq);
             }
@@ -140,9 +145,9 @@ void FLDestroy(FreqList *freq_list) {
         ptr = prev;
         for (; ptr != NULL; ptr = prev) {
             prev = ptr->prev;
-			/*if (ptr->name != NULL) {
+			if (ptr->name != NULL) {
 				free(ptr->name);
-			}*/
+			}
             free(ptr);
         }
         front = curr->prev;
