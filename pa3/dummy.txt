@@ -30,7 +30,7 @@
 
 <list> hello
 
- ./testdir/text1.txt 1 ./testdir/testdir2/text3.txt 1
+ ./testdir/testdir2/text3.txt 1 ./testdir/text1.txt 1
 
 </list>
 
@@ -42,7 +42,7 @@
 
 <list> is
 
- ./testdir/text1.txt 10 ./testdir/text2.txt 1 ./testdir/testdir2/text3.txt 1
+ ./testdir/text1.txt 10 ./testdir/testdir2/text3.txt 1 ./testdir/text2.txt 1
 
 </list>
 
@@ -84,7 +84,7 @@
 
 <list> this
 
- ./testdir/text1.txt 10 ./testdir/text2.txt 1 ./testdir/testdir2/text3.txt 1
+ ./testdir/text1.txt 10 ./testdir/testdir2/text3.txt 1 ./testdir/text2.txt 1
 
 </list>
 

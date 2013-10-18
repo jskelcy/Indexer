@@ -171,6 +171,7 @@ int  main(int argc, char** argv){
     currString[0] = '\0';
     printTree(tree, currString,fp);
     freeTree(tree);
+    free(tree);
     return 0;
 }
 
