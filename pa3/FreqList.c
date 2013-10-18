@@ -59,11 +59,10 @@ void FLInsert(FreqList *freq_list, char *filename) {
         /* Push new node */
 		int i;
         file_node = CreateFileNode();
-        file_node->name = malloc(length * sizeof(char));
-		for (i = 0; i < length; i++) {
+        file_node->name = malloc((1 +length) * sizeof(char));
+		for (i = 0; i <= length; i++) {
 			file_node->name[i] = filename[i];
 		}
-		file_node->name[length - 1] = '\0';
         file_node->length = length;
         file_node->parent = freq_list->root;
         file_node->next = freq_list->root->child;

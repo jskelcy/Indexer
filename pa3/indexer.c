@@ -63,9 +63,9 @@ void freeTree(treeRoot *tree){
         }
         free(curr->branches);
     }
-	if (curr->freak != NULL) {
-		FLDestroy(curr->freak);
-	}
+    if (curr->freak != NULL) {
+        FLDestroy(curr->freak);
+    }
     free(curr);
 }
 
@@ -114,6 +114,25 @@ void travdir(treeRoot *tree, char *dirRoot){
     char currChar;
     struct dirent *currFile;
     dp = opendir(dirRoot);
+    if(dp == NULL){
+        FILE *file = fopen(dirRoot,"r");
+        currChar = fgetc(file);
+        while(currChar != EOF){
+            if(isAlphaNum(currChar)){
+                insertNode(tree, currChar);
+            }else{
+                tree->ptr->isWord = 1;
+                if (tree->ptr->freak == NULL) {
+                    tree->ptr->freak = FLCreate();
+                }
+                FLInsert(tree->ptr->freak,dirRoot);
+                tree->ptr = tree->root;
+            }
+            currChar = fgetc(file);
+        }
+        fclose(file);
+        return;
+    }
     printf("COMMENT: trying to add stuff to our tree\n");
     while((currFile = readdir(dp)) != NULL){
         if(currFile->d_name[0]=='.'){
@@ -142,10 +161,10 @@ void travdir(treeRoot *tree, char *dirRoot){
                     FLInsert(tree->ptr->freak,fileName);
                     tree->ptr = tree->root;
                 }
-    	        currChar = fgetc(file);
+                currChar = fgetc(file);
             }
-			free(fileName);
-	        fclose(file);
+            free(fileName);
+            fclose(file);
         }
     }
     closedir(dp);
@@ -156,9 +175,9 @@ void travdir(treeRoot *tree, char *dirRoot){
 
 int  main(int argc, char** argv){
     char ans;
-    FILE *fp = fopen(argv[2],"w");
+    FILE *fp = fopen(argv[1],"w");
     if(fp!= NULL){
-        printf("the file %s is already a file, do you want to overwrite (y/n)\n",argv[2]);
+        printf("the file %s is already a file, do you want to overwrite (y/n)\n",argv[1]);
         scanf("%c",&ans);
         if(ans == 'n'){
             fclose(fp);
@@ -167,14 +186,11 @@ int  main(int argc, char** argv){
         }
     }
     treeRoot *tree = treeInit();
-    travdir(tree, argv[1]);
-    char *currString = malloc(sizeof(char));
-    currString[0] = '\0';
-    printTree(tree, currString,fp);
-	free(currString);
+    travdir(tree, argv[2]);
+    printTree(tree, NULL,fp);
     freeTree(tree);
     free(tree);
-	fclose(fp);
+    fclose(fp);
     return 0;
 }
 
