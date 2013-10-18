@@ -1,30 +1,41 @@
-#include <stdlid.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include "prefixTree.h"
 
-typedef struct treeRoot(){
-   struct Node  *root;
-} treeRoot;
-
-typedef struct Node(char letter,){
-    char letter = letter;
-    Node **branches;
-    void *freak;
-    char isWord;
-} Node;
+int hash(char c){
+    int hashInt = (int) c;
+    if(97<= hashInt && hashInt <= 122){
+        return (hashInt - 97);
+    }else{
+        return (hashInt-48+10);
+    }
+}
 
 treeRoot* treeInit(){
-    treeRoot *returnTree = (treeRoot *) malloc (sizeof(treeRoot));
+    treeRoot *returnTree = (treeRoot *) calloc (1,sizeof(treeRoot));
     returnTree->root = (Node *) calloc(1,sizeof(Node));
-    returnTree->root->branches = (Node **) calloc (36, sizeof (Node *));
+    returnTree->ptr = returnTree->root;
     return returnTree;
 }
 
-Node* nodeInit(char letter,char isWord){
-    Node *returnNode = (Node *) calloc(1,sizeof(Node));
-    returnNode->letter= letter;
-    returnNode->branches= (Node **) calloc (36, sizeof (Node *));
-}
 
-int hash(char c){
-
+void insertNode(treeRoot *tree,char c){
+    c = tolower(c);
+    int index = hash(c);
+    if(tree->ptr->branches == NULL){
+        tree->ptr->branches = (Node**) calloc (36,sizeof(Node*));
+        tree->ptr->branches[index] = (Node*) calloc(1,sizeof(Node));
+        tree->ptr->branches[index]->letter = c;
+        tree->ptr = tree->ptr->branches[index];
+        fprintf(stderr,"just insert [%c]\n",c);
+    }else  if(tree->ptr->branches[index]== NULL){
+            tree->ptr->branches[index] = (Node *) calloc (1,sizeof(Node));
+            tree->ptr->branches[index]->letter = c;
+            tree->ptr= tree->ptr->branches[index];
+            fprintf(stderr,"just insert [%c]\n",c);
+        }else{
+            tree->ptr = tree->ptr->branches[index];
+            fprintf(stderr,"just insert [%c]\n",c);
+        }
 }
 
