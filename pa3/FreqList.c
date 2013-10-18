@@ -109,9 +109,9 @@ void FLPrintf(FreqList *freq_list, FILE *fp) {
 				printf("\tFilename: %s\n\t\tCount: %d\n", ptr->name, curr->freq);
 			}
 		}
-		if (fp) {
-			fprintf(fp, "\n");
-		}
+	}
+	if (fp) {
+		fprintf(fp, "\n");
 	}
 }
 
