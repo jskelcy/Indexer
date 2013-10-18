@@ -95,10 +95,8 @@ void travdir(treeRoot *tree, char *dirRoot){
     char *currPath  = dirRoot;
     char *fileName;
     char currChar;
-    char *printable;
     struct dirent *currFile;
     dp = opendir(dirRoot);
-    printable = NULL;
     printf("COMMENT: trying to add stuff to our tree\n");
     while((currFile = readdir(dp)) != NULL){
         if(currFile->d_name[0]=='.'){
