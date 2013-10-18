@@ -144,7 +144,7 @@ void travdir(treeRoot *tree, char *dirRoot){
 
 int  main(int argc, char** argv){
     char ans;
-    FILE *fp = fopen(argv[2],"r");
+    FILE *fp = fopen(argv[2],"w");
     if(fp!= NULL){
         printf("the file %s is already a file, do you want to overwrite (y/n)\n",argv[2]);
         scanf("%c",&ans);
