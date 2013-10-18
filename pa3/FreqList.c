@@ -112,7 +112,7 @@ void FLPrintf(FreqList *freq_list, FILE *fp) {
 	}
 }
 
-void FLPrint(FreqList *freq_list, FILE *fp) {
+void FLPrint(FreqList *freq_list) {
 	FLPrintf(freq_list, NULL);
 }
 
