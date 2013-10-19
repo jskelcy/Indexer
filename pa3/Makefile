@@ -2,10 +2,10 @@ CCFlags= -ansi -Wall -pedantic -g -std=c99 -D_BSD_SOURCE
 
 CC= gcc
 
-all: indexer
+all: index
 
-indexer: prefixTree.o indexer.o FreqList.o prefixTree.h FreqList.h
-	${CC} ${CCFlags} -o indexer prefixTree.o indexer.o FreqList.o prefixTree.h FreqList.h
+index: prefixTree.o index.o FreqList.o prefixTree.h FreqList.h
+	${CC} ${CCFlags} -o index prefixTree.o index.o FreqList.o prefixTree.h FreqList.h
 
 PrefixTree.o: prefixTree.c
 	${CC} ${CCFlags} -c prefixTree.c
@@ -13,8 +13,8 @@ PrefixTree.o: prefixTree.c
 FreqList.o: FreqList.c
 	${CC} ${CCFlags} -c FreqList.c
 
-indexer.o: indexer.c
-	${CC} ${CCFlags} -c indexer.c
+index.o: index.c
+	${CC} ${CCFlags} -c index.c
 
 clean:
-	rm *o indexer dummy.txt
+	rm *o index

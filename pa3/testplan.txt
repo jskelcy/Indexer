@@ -1,0 +1,9 @@
+./index testresults.txt ./testdir/
+./index testresults.txt big.txt
+./index testresults.txt ./testdir/
+./index ./testdir/
+./index ./testdir/ testresults.txt
+./index testresults.txt ./testdir/
+./index testresults.txt nonexistant.txt
+./index testresults.txt ./nonexistant/
+./index testresults.txt testresults.txt

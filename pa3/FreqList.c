@@ -133,11 +133,13 @@ void FLPrint(FreqList *freq_list) {
 
 void FLDestroy(FreqList *freq_list) {
     FreqNode *curr = NULL, *front;
+	/* free backwards first DLL */
     for (front = freq_list->root; front != NULL; front = front->next) {
         curr = front;
     }
     for (; curr != NULL; curr = front) {
         FileNode *ptr, *prev = NULL;
+		/* free backwards second DLL */
         for (ptr = curr->child; ptr != NULL; ptr = ptr->next) {
             prev = ptr;
         }
