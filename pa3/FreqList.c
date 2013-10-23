@@ -1,70 +1,32 @@
 #include "FreqList.h"
 
-FileNode *CreateFileNode() {
-    FileNode *file_node = malloc(sizeof(FileNode));
-    file_node->name = NULL;
-    file_node->prev = NULL;
-    file_node->next = NULL;
-    file_node->parent = NULL;
-    return file_node;
-}
-
-FreqNode *CreateFreqNode() {
-    FreqNode *freq_node = malloc(sizeof(FreqNode));
-    freq_node->freq = 0;
+FreqList *FLCreate() {
+    FreqList *freq_list = malloc(sizeof(FreqList));
+	FreqNode *freq_node = malloc(sizeof(FreqNode));
+    freq_node->freq = 1;
     freq_node->prev = NULL;
     freq_node->next = NULL;
     freq_node->child = NULL;
-    return freq_node;
-}
-
-FreqList *FLCreate() {
-    FreqList *freq_list = malloc(sizeof(FreqList));
-    freq_list->root = CreateFreqNode();
-    freq_list->root->freq = 1;
+    freq_list->root = freq_node;
     freq_list->current = NULL;
     return freq_list;
 }
 
 void FLInsert(FreqList *freq_list, char *filename) {
-    int createNewNode = 0, length = 0;
     FileNode *file_node;
-    /* if filename is nothing */
+	if (freq_list == NULL) {
+		return;
+	}
     if (filename == NULL || filename[0] == '\0') {
         return;
     }
-    /* if the freq_list does not have a current node */
-    while (filename[length] != '\0') {
-        length++;
-    }
-    if (freq_list->current == NULL) {
-        createNewNode = 1;
-    } else {
-        /* if length does not equal each other */
-        if (length != freq_list->current->length) {
-            createNewNode = 1;
-            /* if the strings do not equal each other */
-        } else {
-            int index;
-            char *base_string = freq_list->current->name;
-            for (index = 0; index < length; index++) {
-                if (base_string[index] != filename[index]) {
-                    createNewNode = 1;
-                    break;
-                }
-            }
-        }
-    }
-    if (createNewNode) {
+	file_node = freq_list->current;
+    if (file_node == NULL || filename != file_node->name) {
         /* Push new node */
-		int i;
-        file_node = CreateFileNode();
-        file_node->name = malloc((1 +length) * sizeof(char));
-		for (i = 0; i <= length; i++) {
-			file_node->name[i] = filename[i];
-		}
-        file_node->length = length;
+    	file_node = malloc(sizeof(FileNode));
+        file_node->name = filename;
         file_node->parent = freq_list->root;
+		file_node->prev = NULL;
         file_node->next = freq_list->root->child;
         if (file_node->next != NULL) {
             file_node->next->prev = file_node;
@@ -72,48 +34,62 @@ void FLInsert(FreqList *freq_list, char *filename) {
         freq_list->root->child = file_node;
         freq_list->current = file_node;
     } else {
+		FreqNode *prev = file_node->parent, *next = prev->next, *curr = next;
         /* Free from previous list */
-        file_node = freq_list->current;
         if (file_node->next != NULL) {
             file_node->next->prev = file_node->prev;
         }
         if (file_node->prev != NULL) {
             file_node->prev->next = file_node->next;
         } else {
-            file_node->parent->child = file_node->next;
+            prev->child = file_node->next;
         }
         file_node->prev = NULL;
         file_node->next = NULL;
-        /* Place in new list */
-        if (file_node->parent->next == NULL) {
-            file_node->parent->next = CreateFreqNode();
-            file_node->parent->next->freq = file_node->parent->freq + 1;
-            file_node->parent->next->prev = file_node->parent;
+        /* Create a new current node if not the correct one */
+        if (next == NULL || next->freq != prev->freq + 1) {
+			curr = malloc(sizeof(FreqNode));
+            curr->freq = prev->freq + 1;
+            curr->prev = prev;
+            prev->next = curr;
+			curr->next = next;
+			if (next != NULL) {
+				next->prev = curr;
+			}
+			curr->child = NULL;
         }
-        file_node->parent = file_node->parent->next;
-        file_node->next = file_node->parent->child;
+        file_node->parent = curr;
+		/* Destroy the old node if there is nothing left */
+		if (prev->prev != NULL && prev->child == NULL) {
+			prev->prev->next = prev->next;
+			if (prev->next != NULL) {
+				prev->next->prev = prev->prev;
+			}
+			free(prev);
+		}
+		/* Insert into new list */
+        file_node->next = curr->child;
         if (file_node->next != NULL) {
             file_node->next->prev = file_node;
-        }
-        file_node->parent->child = file_node;
+		}
+        curr->child = file_node;
     }
 }
 
-void FLPrintf(FreqList *freq_list, FILE *fp) {
+void FLPrint(FreqList *freq_list, FILE *fp) {
     FreqNode *curr = NULL, *front;
 	int top5 = 0;
+	if (freq_list == NULL || fp == NULL) {
+		return;
+	}
     for (front = freq_list->root; front != NULL; front = front->next) {
         curr = front;
     }
     for (; curr != NULL; curr = curr->prev) {
         FileNode *ptr;
         for (ptr = curr->child; ptr != NULL; ptr = ptr->next) {
+	       	fprintf(fp, " %s %d", ptr->name, curr->freq);
 			top5++;
-            if (fp) {
-	        	fprintf(fp, " %s %d", ptr->name, curr->freq);
-            } else {
-                printf("\tFilename: %s\n\t\tCount: %d\n", ptr->name, curr->freq);
-            }
 			if (top5 == 5) {
 				break;
 			}
@@ -122,17 +98,14 @@ void FLPrintf(FreqList *freq_list, FILE *fp) {
 			break;
 		}
     }
-    if (fp) {
-        fprintf(fp, "\n");
-    }
-}
-
-void FLPrint(FreqList *freq_list) {
-    FLPrintf(freq_list, NULL);
+	fprintf(fp, "\n");
 }
 
 void FLDestroy(FreqList *freq_list) {
     FreqNode *curr = NULL, *front;
+	if (freq_list == NULL) {
+		return;
+	}
 	/* free backwards first DLL */
     for (front = freq_list->root; front != NULL; front = front->next) {
         curr = front;
@@ -146,9 +119,6 @@ void FLDestroy(FreqList *freq_list) {
         ptr = prev;
         for (; ptr != NULL; ptr = prev) {
             prev = ptr->prev;
-			if (ptr->name != NULL) {
-				free(ptr->name);
-			}
             free(ptr);
         }
         front = curr->prev;

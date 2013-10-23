@@ -10,7 +10,6 @@ typedef struct FreqList FreqList;
 
 struct FileNode {
 	char *name;
-	int length;
 	FileNode *prev, *next;
 	FreqNode *parent;
 };
@@ -26,12 +25,9 @@ struct FreqList {
 	FileNode *current;
 };
 
-FileNode *CreateFileNode();
-FreqNode *CreateFreqNode();
 FreqList *FLCreate();
 void FLInsert(FreqList *, char *);
-void FLPrintf(FreqList *, FILE *);
-void FLPrint(FreqList *);
+void FLPrint(FreqList *, FILE *);
 void FLDestroy(FreqList *);
 
 #endif

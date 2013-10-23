@@ -1,80 +1,22 @@
 #include <stdlib.h>
-#include <dirent.h>
-#include <unistd.h>
 #include <stdio.h>
-#include <sys/stat.h>
-#include "prefixTree.h"
 #include <string.h>
-#include <stdlib.h>
-#include <ctype.h>
+#include "prefixTree.h"
 #include "FreqList.h"
+#include <ctype.h>
+#include <dirent.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
-char* append(char *s,char c){
-		char *copy;
-		int i;
-		if(s == NULL){
-				copy = (char *) malloc(sizeof(char)*2);
-				copy[0]= c;
-				copy[1]= '\0';
-				return copy;
-		}
-		int length = strlen(s);
-		copy = (char *)malloc(length+2);
-		for(i=0;i<length;i++){
-				copy[i]=s[i];
-		}
-		copy[length]= c;
-		copy[length +1] ='\0';
-		return copy;
-}
-
-
-void printTree(treeRoot* tree,char *currString,FILE *openFile){
-		Node *curr = tree->ptr;
-		if(curr->isWord == 1 && currString != NULL){
-				fprintf(openFile,"<list> ");
-				fprintf(openFile, "%s\n\n", currString);
-				FLPrintf(curr->freak, openFile);
-				fprintf(openFile,"\n</list>\n\n");
-		}
-		if (curr->branches != NULL) {
-				for (int i = 0; i < 62; i++) {
-						if (curr->branches[i] != NULL) {
-								char *newWord = append(currString, curr->branches[i]->letter);
-								tree->ptr = curr->branches[i];
-								printTree(tree, newWord, openFile);
-								free(newWord);
-								tree->ptr = curr;
-						}
-				}
-		}
-}
-
-void freeTree(treeRoot *tree){
-		Node *curr;
-		curr = tree->ptr;
-		if(curr->branches != NULL){
-				for (int i = 0; i<62; i++){
-						if(curr->branches[i]!= NULL){
-								tree->ptr = curr->branches[i];
-								freeTree(tree);
-								tree->ptr = curr;
-						}
-				}
-				free(curr->branches);
-		}
-		if (curr->freak != NULL) {
-				FLDestroy(curr->freak);
-		}
-		free(curr);
-}
-
-
+/*
+ * These are helper functions, which help determine alphaNumeric-ness
+ * and concatentate directories together.
+ */
 int isAlphaNum(char c){
 		return (('a'<= c && c <='z') || ('0' <= c && c <='9') || ('A' <= c && c <= 'Z'));
 }
 
-char *concatDIR(char *c1, char *c2) {
+char *concatDir(char *c1, char *c2) {
 		int len1 = 0, len2 = 0, i = 0, addSlash;
 		char *c3;
 		if (c1 == NULL || c1[0] == '\0' || c2 == NULL || c2[0] == '\0') {
@@ -87,7 +29,7 @@ char *concatDIR(char *c1, char *c2) {
 		while (c2[len2] != '\0') {
 				len2++;
 		}
-		c3 = calloc(len1 + len2 + 1 + addSlash, sizeof(char));
+		c3 = calloc(len1 + len2 + addSlash + 1, sizeof(char));
 		for (; i < len1; i++) {
 				c3[i] = c1[i];
 		}
@@ -96,73 +38,88 @@ char *concatDIR(char *c1, char *c2) {
 				i++;
 		}
 		for (i = 0; i < len2; i++) {
-				c3[len1 + i + addSlash] = c2[i];
+				c3[len1 + addSlash + i] = c2[i];
 		}
-		c3[i + len1 + addSlash] = '\0';
+		c3[len1 + addSlash + i] = '\0';
 		return c3;
 }
 
-void travdir(treeRoot *tree, char *dirRoot){
-		DIR *dp;
-		char *currPath  = dirRoot;
-		char *fileName;
-		char currChar;
-		struct dirent *currFile;
-		dp = opendir(dirRoot);
-		if(dp == NULL){
-				FILE *file = fopen(dirRoot,"r");
-				currChar = fgetc(file);
-				while(currChar != EOF){
-						if (isAlphaNum(currChar)) {
-								insertNode(tree, currChar);
-						} else {
-								tree->ptr->isWord = 1;
-								if (tree->ptr->freak == NULL) {
-										tree->ptr->freak = FLCreate();
-								}
-								FLInsert(tree->ptr->freak,dirRoot);
-								tree->ptr = tree->root;
-						}
-						currChar = fgetc(file);
-				}
-				fclose(file);
-				return;
+/*
+ * This is for travesing a single file.
+ * As it traverses the file, it also traverses the PrefixTree and FrequencyList.
+ */
+void travfile(treeRoot *tree, char *filename) {
+	FILE *file = fopen(filename, "r");
+	char currChar;
+	int depth = 0;
+	while ((currChar = fgetc(file)) != EOF) {
+		if (isAlphaNum(currChar)) {
+			insertNode(tree, currChar);
+			depth++;
+		} else {
+			tree->ptr->isWord = 1;
+			if (tree->ptr->freak == NULL) {
+				tree->ptr->freak = FLCreate();
+			}
+			FLInsert(tree->ptr->freak, filename);
+			tree->ptr = tree->root;
+			if (tree->depth < depth) {
+				tree->depth = depth;
+			}
+			depth = 0;
 		}
-		while((currFile = readdir(dp)) != NULL){
-				if(currFile->d_name[0]=='.'){
+	}
+	if (tree->ptr != tree->root) {
+		tree->ptr->isWord = 1;
+		if (tree->ptr->freak == NULL) {
+			tree->ptr->freak = FLCreate();
+		}
+		FLInsert(tree->ptr->freak, filename);
+		tree->ptr = tree->root;
+		if (tree->depth < depth) {
+			tree->depth = depth;
+		}
+		depth = 0;
+	}
+	fclose(file);
+}
+
+/*
+ * This is for traversing a single directory.
+ * Should the directory actually be a filename, it will travfile immediately instead.
+ */
+void travdir(treeRoot *tree, char *dirRoot) {
+		DIR *dp = opendir(dirRoot);
+		struct dirent *dirItem;
+		char *currPath;
+		if (dp == NULL) {
+			travfile(tree, dirRoot);
+		} else {
+			while ((dirItem = readdir(dp)) != NULL) {
+				if (dirItem->d_name[0] == '.') {
 						continue;
 				}
-				if(currFile->d_type & DT_DIR){
-						fileName= concatDIR(currPath,currFile->d_name);
-						travdir(tree,fileName);
-						free(fileName);
-				}else{
-						FILE *file = fopen((fileName=concatDIR(currPath,currFile->d_name)),"r");
-						currChar = fgetc(file);
-						while(currChar != EOF){
-								if(isAlphaNum(currChar)){
-										insertNode(tree, currChar);
-								}else{
-										tree->ptr->isWord = 1;
-										if (tree->ptr->freak == NULL) {
-												tree->ptr->freak = FLCreate();
-										}
-										FLInsert(tree->ptr->freak,fileName);
-										tree->ptr = tree->root;
-								}
-								currChar = fgetc(file);
-						}
-						free(fileName);
-						fclose(file);
+				if (dirItem->d_type & DT_DIR) {
+						currPath = concatDir(dirRoot, dirItem->d_name);
+						travdir(tree, currPath);
+						free(currPath);
+				} else {
+						FilenameNode *FNN = calloc(1, sizeof(FilenameNode));
+						currPath = concatDir(dirRoot, dirItem->d_name);
+						FNN->filename = currPath;
+						FNN->next = tree->filenames;
+						tree->filenames = FNN;
+						travfile(tree, currPath);
 				}
+			}
+			closedir(dp);
 		}
-		closedir(dp);
-		tree->ptr=tree->root;
+		tree->ptr = tree->root;
 		return;
 }
 
-int  main(int argc, char** argv){
-		char ans;
+int main(int argc, char **argv){
+		char ans, *printBuffer;
 		FILE *fp = NULL;
 		DIR *dp = NULL;
 		/* Check for valid argc */
@@ -199,24 +156,25 @@ int  main(int argc, char** argv){
 		fp = fopen(argv[1],"r");
 		if (fp != NULL) {
 			printf("Are you sure you want to overwrite %s? (y/n)\n",argv[1]);
-			scanf("%c",&ans);
-			if(ans != 'y'){
+			ans = 'y';
+			printf("%c\n", ans);
+			/*scanf("%c",&ans);
+			if (ans != 'y'){
 				fclose(fp);
-				printf("Exiting.\n");
 				return 0;
-			}
+			}*/
 		}
 		if (fp != NULL) {
 			fclose(fp);
 		}
 		/* Do program */
-		fp = fopen(argv[1],"w");
 		treeRoot *tree = treeInit();
 		travdir(tree, argv[2]);
-		printTree(tree, NULL,fp);
+		fp = fopen(argv[1], "w");
+		printBuffer = malloc((tree->depth + 1) * sizeof(char));
+		printTree(tree, printBuffer, fp, 0);
+		free(printBuffer);
 		freeTree(tree);
-		free(tree);
 		fclose(fp);
-		printf("Done. Exiting.\n");
 		return 0;
 }
